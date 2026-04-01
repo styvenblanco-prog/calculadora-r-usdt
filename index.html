@@ -49,9 +49,10 @@
             border-radius: 8px;
             text-align: center;
             margin-bottom: 20px;
-            font-size: 14px;
-            color: #555;
+            font-size: 15px;
+            color: #0f5132;
             font-weight: bold;
+            border: 1px solid #d1e7dd;
         }
         .result-box {
             background-color: #d1e7dd;
@@ -71,12 +72,12 @@
         <h2>Calculadora R$</h2>
         
         <div class="rate-box" id="tasaDisplay">
-            Intentando conectar con el servidor...
+            Cargando tasa del día...
         </div>
 
         <div class="input-group">
-            <label for="tasaManual">Tasa VES/USDT (Binance P2P):</label>
-            <input type="number" id="tasaManual" placeholder="Ej: 38.50" step="0.01" oninput="calcular()">
+            <label for="tasaManual">Tasa VES/USDT de referencia:</label>
+            <input type="number" id="tasaManual" step="0.01" oninput="calcular()">
         </div>
 
         <div class="input-group">
@@ -99,52 +100,40 @@
     </div>
 
     <script>
-        // Súper Función Anti-Bloqueos (Nivel Profesional)
-        async function obtenerTasa() {
-            try {
-                document.getElementById('tasaDisplay').innerText = '⏳ Conectando con servidores...';
-                document.getElementById('tasaDisplay').style.color = "#555";
+        // ==========================================
+        // 🛠️ ZONA DE CONFIGURACIÓN DEL ADMINISTRADOR
+        // Cambia este número todos los días
+        // ==========================================
+        const TASA_DEL_DIA = 652.55; 
+        // ==========================================
 
-                let tasa = 0;
 
-                // INTENTO 1: DolarApi Directo (El más rápido)
-                try {
-                    const res1 = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
-                    const data1 = await res1.json();
-                    tasa = data1.promedio;
-                } catch (error1) {
-                    console.log("Fallo Intento 1. Probando Intento 2...");
-                    
-                    // INTENTO 2: Yadio a través de CodeTabs Proxy (El plan de respaldo blindado)
-                    try {
-                        const res2 = await fetch('https://api.codetabs.com/v1/proxy?quest=https://api.yadio.io/exrates/VES');
-                        const data2 = await res2.json();
-                        tasa = data2.USD.binance;
-                    } catch (error2) {
-                        // Si ambos fallan, forzamos el error para que salga el mensaje rojo
-                        throw new Error("Todos los servidores bloqueados o caídos");
-                    }
-                }
-
-                // Si logramos obtener la tasa, la mostramos triunfalmente
-                if (tasa > 0) {
-                    // Redondeamos a 2 decimales para mayor limpieza
-                    document.getElementById('tasaManual').value = tasa.toFixed(2);
-                    document.getElementById('tasaDisplay').innerText = '✅ Tasa P2P actualizada';
-                    document.getElementById('tasaDisplay').style.color = "green";
-                    calcular();
-                }
-
-            } catch (errorTotal) {
-                // El escudo final: Si el internet simplemente no deja pasar nada
-                document.getElementById('tasaDisplay').innerText = '⚠️ Usa la tasa manual (Servidores bloqueados)';
-                document.getElementById('tasaDisplay').style.color = "red";
-            }
+        // Función que arranca la aplicación
+        function inicializar() {
+            // Colocamos tu tasa configurada en la pantalla
+            document.getElementById('tasaManual').value = TASA_DEL_DIA;
+            document.getElementById('tasaDisplay').innerText = `✅ Tasa sugerida de hoy: ${TASA_DEL_DIA} VES/USDT`;
+            
+            // Calculamos por si acaso
+            calcular();
         }
 
-        // Ejecutar al abrir
-        obtenerTasa();
+        // Función matemática
+        function calcular() {
+            const tasaVES = parseFloat(document.getElementById('tasaManual').value) || 0;
+            const cantidadR = parseFloat(document.getElementById('cantidadR').value) || 0;
+            const precio10k = parseFloat(document.getElementById('precio10k').value) || 0;
+
+            const totalUSDT = (cantidadR / 10000) * precio10k;
+            const totalVES = totalUSDT * tasaVES;
+
+            document.getElementById('resultadoUSDT').innerText = totalUSDT.toFixed(2);
+            document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
+        }
+
+        // Ejecutar al abrir la app
+        inicializar();
     </script>
 
 </body>
-  </html>
+</html>
