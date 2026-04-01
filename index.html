@@ -54,24 +54,90 @@
             font-weight: bold;
             border: 1px solid #d1e7dd;
         }
+        
+        /* Contenedores de resultados con Flexbox para alinear el botón de copiar */
         .result-box {
             background-color: #d1e7dd;
             color: #0f5132;
             padding: 15px;
             border-radius: 8px;
             margin-top: 10px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 18px;
             font-weight: bold;
         }
+        .result-text {
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        /* Botones de copiar */
+        .copy-btn {
+            background: none;
+            border: 1px solid rgba(0,0,0,0.1);
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:active {
+            background-color: #ccc;
+        }
+
+        /* Sección de Donaciones */
+        .btn-donar-toggle {
+            width: 100%;
+            background-color: #f8f9fa;
+            border: 2px dashed #0d6efd;
+            color: #0d6efd;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: background 0.2s;
+        }
+        .btn-donar-toggle:active {
+            background-color: #e9ecef;
+        }
+        .donaciones-card {
+            display: none; /* Oculto por defecto */
+            background-color: #e2e3e5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #383d41;
+        }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+        .data-text {
+            font-family: monospace;
+            font-size: 15px;
+        }
+
         /* Estilo para el contenedor del anuncio */
         .ad-container {
-            margin-top: 20px;
-            padding: 10px;
+            margin-top: 25px;
+            padding: 5px;
             text-align: center;
-            background-color: #fafafa;
-            border-radius: 8px;
             min-height: 50px;
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
@@ -100,15 +166,42 @@
         </div>
 
         <div class="result-box">
-            USDT: <span id="resultadoUSDT">0.00</span>
+            <div class="result-text">USDT: <span id="resultadoUSDT">0.00</span></div>
+            <button class="copy-btn" onclick="copiarValor(document.getElementById('resultadoUSDT').innerText, this)" title="Copiar USDT">📋</button>
         </div>
         
         <div class="result-box" style="background-color: #fff3cd; color: #856404;">
-            Bolívares (VES): <span id="resultadoVES">0.00</span>
+            <div class="result-text">VES: <span id="resultadoVES">0.00</span></div>
+            <button class="copy-btn" onclick="copiarValor(document.getElementById('resultadoVES').innerText, this)" title="Copiar Bolívares">📋</button>
+        </div>
+
+        <button class="btn-donar-toggle" onclick="toggleDonaciones()">
+            ☕ ¿Te es útil la App? ¡Apoya su desarrollo!
+        </button>
+
+        <div class="donaciones-card" id="seccionDonaciones">
+            <p style="margin-top: 0; font-weight: bold; text-align: center;">¡Gracias por tu apoyo! 💖</p>
+            
+            <strong>📲 Pago Móvil (BDV 0102)</strong>
+            <div class="data-row">
+                <span class="data-text">V27594845</span>
+                <button class="copy-btn" onclick="copiarValor('27594845', this)">📋</button>
+            </div>
+            <div class="data-row">
+                <span class="data-text">04144049598</span>
+                <button class="copy-btn" onclick="copiarValor('04144049598', this)">📋</button>
+            </div>
+
+            <strong style="margin-top: 10px; display: block;">🟡 Binance / 🟣 Zinli</strong>
+            <div class="data-row">
+                <span class="data-text" style="font-size: 13px;">nixonstyvenblanco@gmail.com</span>
+                <button class="copy-btn" onclick="copiarValor('nixonstyvenblanco@gmail.com', this)">📋</button>
+            </div>
         </div>
 
         <div class="ad-container" id="espacio-publicitario">
-            <script src="https://pl29036860.profitablecpmratenetwork.com/f2/87/40/f287409ca2b64f55225a35ac4e84db6f.js"></script>
+            <script async="async" data-cfasync="false" src="https://pl29038120.profitablecpmratenetwork.com/5d7569326f56770380fbae9bfe1c16f8/invoke.js"></script>
+            <div id="container-5d7569326f56770380fbae9bfe1c16f8"></div>
         </div>
 
     </div>
@@ -116,9 +209,8 @@
     <script>
         // ==========================================
         // 🛠️ ZONA DE CONFIGURACIÓN DEL ADMINISTRADOR
-        // Cambia este número para actualizar la tasa
         // ==========================================
-        const TASA_DEL_DIA = 651.13; 
+        const TASA_DEL_DIA = 658,86; 
         // ==========================================
 
         function inicializar() {
@@ -139,6 +231,37 @@
             document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
         }
 
+        // --- NUEVAS FUNCIONES ---
+
+        // Función para mostrar/ocultar la tarjeta de donaciones
+        function toggleDonaciones() {
+            const seccion = document.getElementById('seccionDonaciones');
+            if (seccion.style.display === "none" || seccion.style.display === "") {
+                seccion.style.display = "block";
+            } else {
+                seccion.style.display = "none";
+            }
+        }
+
+        // Función maestra para copiar al portapapeles y cambiar el icono temporalmente
+        function copiarValor(texto, boton) {
+            // El API de portapapeles moderno
+            navigator.clipboard.writeText(texto).then(() => {
+                // Si se copia bien, cambiamos el icono por un check verde
+                const iconoOriginal = boton.innerText;
+                boton.innerText = "✅";
+                
+                // Después de 2 segundos, lo regresamos a la normalidad
+                setTimeout(() => {
+                    boton.innerText = iconoOriginal;
+                }, 2000);
+            }).catch(err => {
+                console.error('No se pudo copiar el texto: ', err);
+                alert("Error al copiar. Tu navegador podría no soportarlo.");
+            });
+        }
+
+        // Ejecutar al abrir la app
         inicializar();
     </script>
 
