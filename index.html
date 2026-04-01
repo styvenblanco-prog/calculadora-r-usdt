@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora R$ a USDT/VES</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .app-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .rate-box {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #555;
+            font-weight: bold;
+        }
+        .result-box {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <h2>Calculadora R$</h2>
+        
+        <div class="rate-box" id="tasaDisplay">
+            Intentando conectar con el servidor...
+        </div>
+
+        <div class="input-group">
+            <label for="tasaManual">Tasa VES/USDT (Binance P2P):</label>
+            <input type="number" id="tasaManual" placeholder="Ej: 38.50" step="0.01" oninput="calcular()">
+        </div>
+
+        <div class="input-group">
+            <label for="cantidadR">Cantidad de R$ a vender:</label>
+            <input type="number" id="cantidadR" placeholder="Ej: 50000" oninput="calcular()">
+        </div>
+
+        <div class="input-group">
+            <label for="precio10k">Precio en USDT por cada 10,000 R$:</label>
+            <input type="number" id="precio10k" placeholder="Ej: 1.50" step="0.01" oninput="calcular()">
+        </div>
+
+        <div class="result-box">
+            USDT: <span id="resultadoUSDT">0.00</span>
+        </div>
+        
+        <div class="result-box" style="background-color: #fff3cd; color: #856404;">
+            Bolívares (VES): <span id="resultadoVES">0.00</span>
+        </div>
+    </div>
+
+    <script>
+        // Nueva función mejorada
+        async function obtenerTasa() {
+            try {
+                const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
+                const datos = await respuesta.json();
+                
+                // Si funciona, llenamos la casilla de la tasa automáticamente
+                document.getElementById('tasaManual').value = datos.promedio;
+                document.getElementById('tasaDisplay').innerText = '✅ Tasa obtenida con éxito';
+                document.getElementById('tasaDisplay').style.color = "green";
+                
+                calcular();
+            } catch (error) {
+                // Si el editor o el internet la bloquean, le avisamos al usuario para que la ponga manual
+                document.getElementById('tasaDisplay').innerText = '⚠️ Conexión bloqueada. Ingresa la tasa manualmente abajo.';
+                document.getElementById('tasaDisplay').style.color = "red";
+            }
+        }
+
+        function calcular() {
+            // Obtenemos los valores. Si están vacíos, usamos 0.
+            const tasaVES = parseFloat(document.getElementById('tasaManual').value) || 0;
+            const cantidadR = parseFloat(document.getElementById('cantidadR').value) || 0;
+            const precio10k = parseFloat(document.getElementById('precio10k').value) || 0;
+
+            // Fórmulas
+            const totalUSDT = (cantidadR / 10000) * precio10k;
+            const totalVES = totalUSDT * tasaVES;
+
+            // Mostrar resultados
+            document.getElementById('resultadoUSDT').innerText = totalUSDT.toFixed(2);
+            document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
+        }
+
+        // Ejecutar al abrir
+        obtenerTasa();
+    </script>
+
+</body>
+  </html>
