@@ -99,38 +99,41 @@
     </div>
 
     <script>
-        // Nueva función mejorada
+        // Súper Función Anti-Bloqueos
         async function obtenerTasa() {
             try {
-                const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
-                const datos = await respuesta.json();
-                
-                // Si funciona, llenamos la casilla de la tasa automáticamente
-                document.getElementById('tasaManual').value = datos.promedio;
-                document.getElementById('tasaDisplay').innerText = '✅ Tasa obtenida con éxito';
-                document.getElementById('tasaDisplay').style.color = "green";
-                
-                calcular();
-            } catch (error) {
-                // Si el editor o el internet la bloquean, le avisamos al usuario para que la ponga manual
-                document.getElementById('tasaDisplay').innerText = '⚠️ Conexión bloqueada. Ingresa la tasa manualmente abajo.';
+                // Mensaje inicial
+                document.getElementById('tasaDisplay').innerText = '⏳ Conectando con el servidor...';
+                document.getElementById('tasaDisplay').style.color = "#555";
+
+                let tasa = 0;
+
+                try {
+                    // INTENTO 1: Conexión directa a DolarApi
+                    const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
+                    const datos = await respuesta.json();
+                    tasa = datos.promedio;
+                } catch (errorDirecto) {
+                    // Si el Intento 1 es bloqueado por la operadora, pasamos automáticamente al INTENTO 2
+                    console.log("Conexión directa bloqueada, usando túnel alternativo...");
+                    const respuestaProxy = await fetch('https://api.allorigins.win/raw?url=https://ve.dolarapi.com/v1/dolares/binance');
+                    const datosProxy = await respuestaProxy.json();
+                    tasa = datosProxy.promedio;
+                }
+
+                // Si logramos obtener la tasa con cualquiera de los dos métodos, la mostramos
+                if (tasa > 0) {
+                    document.getElementById('tasaManual').value = tasa;
+                    document.getElementById('tasaDisplay').innerText = '✅ Tasa Binance P2P actualizada';
+                    document.getElementById('tasaDisplay').style.color = "green";
+                    calcular(); // Recalculamos por si había números escritos
+                }
+
+            } catch (errorTotal) {
+                // Si ambos métodos fallan (por ejemplo, si no hay internet en absoluto)
+                document.getElementById('tasaDisplay').innerText = '⚠️ Conexión fallida. Ingresa la tasa manualmente.';
                 document.getElementById('tasaDisplay').style.color = "red";
             }
-        }
-
-        function calcular() {
-            // Obtenemos los valores. Si están vacíos, usamos 0.
-            const tasaVES = parseFloat(document.getElementById('tasaManual').value) || 0;
-            const cantidadR = parseFloat(document.getElementById('cantidadR').value) || 0;
-            const precio10k = parseFloat(document.getElementById('precio10k').value) || 0;
-
-            // Fórmulas
-            const totalUSDT = (cantidadR / 10000) * precio10k;
-            const totalVES = totalUSDT * tasaVES;
-
-            // Mostrar resultados
-            document.getElementById('resultadoUSDT').innerText = totalUSDT.toFixed(2);
-            document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
         }
 
         // Ejecutar al abrir
