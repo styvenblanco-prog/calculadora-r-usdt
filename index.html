@@ -99,39 +99,45 @@
     </div>
 
     <script>
-        // Súper Función Anti-Bloqueos
+        // Súper Función Anti-Bloqueos (Nivel Profesional)
         async function obtenerTasa() {
             try {
-                // Mensaje inicial
-                document.getElementById('tasaDisplay').innerText = '⏳ Conectando con el servidor...';
+                document.getElementById('tasaDisplay').innerText = '⏳ Conectando con servidores...';
                 document.getElementById('tasaDisplay').style.color = "#555";
 
                 let tasa = 0;
 
+                // INTENTO 1: DolarApi Directo (El más rápido)
                 try {
-                    // INTENTO 1: Conexión directa a DolarApi
-                    const respuesta = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
-                    const datos = await respuesta.json();
-                    tasa = datos.promedio;
-                } catch (errorDirecto) {
-                    // Si el Intento 1 es bloqueado por la operadora, pasamos automáticamente al INTENTO 2
-                    console.log("Conexión directa bloqueada, usando túnel alternativo...");
-                    const respuestaProxy = await fetch('https://api.allorigins.win/raw?url=https://ve.dolarapi.com/v1/dolares/binance');
-                    const datosProxy = await respuestaProxy.json();
-                    tasa = datosProxy.promedio;
+                    const res1 = await fetch('https://ve.dolarapi.com/v1/dolares/binance');
+                    const data1 = await res1.json();
+                    tasa = data1.promedio;
+                } catch (error1) {
+                    console.log("Fallo Intento 1. Probando Intento 2...");
+                    
+                    // INTENTO 2: Yadio a través de CodeTabs Proxy (El plan de respaldo blindado)
+                    try {
+                        const res2 = await fetch('https://api.codetabs.com/v1/proxy?quest=https://api.yadio.io/exrates/VES');
+                        const data2 = await res2.json();
+                        tasa = data2.USD.binance;
+                    } catch (error2) {
+                        // Si ambos fallan, forzamos el error para que salga el mensaje rojo
+                        throw new Error("Todos los servidores bloqueados o caídos");
+                    }
                 }
 
-                // Si logramos obtener la tasa con cualquiera de los dos métodos, la mostramos
+                // Si logramos obtener la tasa, la mostramos triunfalmente
                 if (tasa > 0) {
-                    document.getElementById('tasaManual').value = tasa;
-                    document.getElementById('tasaDisplay').innerText = '✅ Tasa Binance P2P actualizada';
+                    // Redondeamos a 2 decimales para mayor limpieza
+                    document.getElementById('tasaManual').value = tasa.toFixed(2);
+                    document.getElementById('tasaDisplay').innerText = '✅ Tasa P2P actualizada';
                     document.getElementById('tasaDisplay').style.color = "green";
-                    calcular(); // Recalculamos por si había números escritos
+                    calcular();
                 }
 
             } catch (errorTotal) {
-                // Si ambos métodos fallan (por ejemplo, si no hay internet en absoluto)
-                document.getElementById('tasaDisplay').innerText = '⚠️ Conexión fallida. Ingresa la tasa manualmente.';
+                // El escudo final: Si el internet simplemente no deja pasar nada
+                document.getElementById('tasaDisplay').innerText = '⚠️ Usa la tasa manual (Servidores bloqueados)';
                 document.getElementById('tasaDisplay').style.color = "red";
             }
         }
