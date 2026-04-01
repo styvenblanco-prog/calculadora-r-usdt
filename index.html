@@ -64,6 +64,15 @@
             font-size: 18px;
             font-weight: bold;
         }
+        /* Estilo para el contenedor del anuncio */
+        .ad-container {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            background-color: #fafafa;
+            border-radius: 8px;
+            min-height: 50px;
+        }
     </style>
 </head>
 <body>
@@ -97,28 +106,27 @@
         <div class="result-box" style="background-color: #fff3cd; color: #856404;">
             Bolívares (VES): <span id="resultadoVES">0.00</span>
         </div>
+
+        <div class="ad-container" id="espacio-publicitario">
+            <script src="https://pl29036860.profitablecpmratenetwork.com/f2/87/40/f287409ca2b64f55225a35ac4e84db6f.js"></script>
+        </div>
+
     </div>
 
     <script>
         // ==========================================
         // 🛠️ ZONA DE CONFIGURACIÓN DEL ADMINISTRADOR
-        // Cambia este número todos los días
+        // Cambia este número para actualizar la tasa
         // ==========================================
-        const TASA_DEL_DIA = 652.55; 
+        const TASA_DEL_DIA = 651.13; 
         // ==========================================
 
-
-        // Función que arranca la aplicación
         function inicializar() {
-            // Colocamos tu tasa configurada en la pantalla
             document.getElementById('tasaManual').value = TASA_DEL_DIA;
             document.getElementById('tasaDisplay').innerText = `✅ Tasa sugerida de hoy: ${TASA_DEL_DIA} VES/USDT`;
-            
-            // Calculamos por si acaso
             calcular();
         }
 
-        // Función matemática
         function calcular() {
             const tasaVES = parseFloat(document.getElementById('tasaManual').value) || 0;
             const cantidadR = parseFloat(document.getElementById('cantidadR').value) || 0;
@@ -131,7 +139,6 @@
             document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
         }
 
-        // Ejecutar al abrir la app
         inicializar();
     </script>
 
