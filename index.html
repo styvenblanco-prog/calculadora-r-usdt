@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="monetag" content="9700cf6422d5f6f7f25e8efefb98d996">
+    
     <title>Calculadora R$ a USDT/VES</title>
     <style>
         body {
@@ -55,7 +58,7 @@
             border: 1px solid #d1e7dd;
         }
         
-        /* Contenedores de resultados con Flexbox para alinear el botón de copiar */
+        /* Contenedores de resultados con Flexbox */
         .result-box {
             background-color: #d1e7dd;
             color: #0f5132;
@@ -88,7 +91,7 @@
             background-color: #ccc;
         }
 
-        /* Sección de Donaciones */
+        /* Sección de Donaciones y Compartir */
         .btn-donar-toggle {
             width: 100%;
             background-color: #f8f9fa;
@@ -106,7 +109,7 @@
             background-color: #e9ecef;
         }
         .donaciones-card {
-            display: none; /* Oculto por defecto */
+            display: none; 
             background-color: #e2e3e5;
             padding: 15px;
             border-radius: 8px;
@@ -138,6 +141,7 @@
             min-height: 50px;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
     </style>
 </head>
@@ -199,9 +203,12 @@
             </div>
         </div>
 
+        <button class="btn-donar-toggle" style="border-color: #25D366; color: #25D366; margin-top: 10px;" onclick="compartirWhatsApp()">
+            📲 Compartir App en WhatsApp
+        </button>
+
         <div class="ad-container" id="espacio-publicitario">
-            <script async="async" data-cfasync="false" src="https://pl29038120.profitablecpmratenetwork.com/5d7569326f56770380fbae9bfe1c16f8/invoke.js"></script>
-            <div id="container-5d7569326f56770380fbae9bfe1c16f8"></div>
+            <p style="color: #ccc; font-size: 12px; margin: 0;">Espacio reservado para banner</p>
         </div>
 
     </div>
@@ -210,7 +217,7 @@
         // ==========================================
         // 🛠️ ZONA DE CONFIGURACIÓN DEL ADMINISTRADOR
         // ==========================================
-        const TASA_DEL_DIA = 658.86; 
+        const TASA_DEL_DIA = 654.32; 
         // ==========================================
 
         function inicializar() {
@@ -231,9 +238,6 @@
             document.getElementById('resultadoVES').innerText = totalVES.toFixed(2);
         }
 
-        // --- NUEVAS FUNCIONES ---
-
-        // Función para mostrar/ocultar la tarjeta de donaciones
         function toggleDonaciones() {
             const seccion = document.getElementById('seccionDonaciones');
             if (seccion.style.display === "none" || seccion.style.display === "") {
@@ -243,15 +247,10 @@
             }
         }
 
-        // Función maestra para copiar al portapapeles y cambiar el icono temporalmente
         function copiarValor(texto, boton) {
-            // El API de portapapeles moderno
             navigator.clipboard.writeText(texto).then(() => {
-                // Si se copia bien, cambiamos el icono por un check verde
                 const iconoOriginal = boton.innerText;
                 boton.innerText = "✅";
-                
-                // Después de 2 segundos, lo regresamos a la normalidad
                 setTimeout(() => {
                     boton.innerText = iconoOriginal;
                 }, 2000);
@@ -261,9 +260,22 @@
             });
         }
 
+        function compartirWhatsApp() {
+            const texto = "¡Hola a todos! 🎮 En RECARGAMING acabamos de desarrollar una nueva herramienta para la comunidad. 🚀\n\n" +
+                          "Una Calculadora Web de R$ a USDT y Bolívares (VES) súper rápida y fácil de usar.\n" +
+                          "✅ Tasa de cambio de referencia actualizada.\n" +
+                          "✅ Botones para copiar los montos exactos con un toque.\n" +
+                          "✅ ¡Úsala directo en tu navegador sin instalar nada ni anuncios invasivos!\n\n" +
+                          "Pruébala gratis aquí: https://TU-ENLACE-AQUI.netlify.app"; 
+            
+            const textoCodificado = encodeURIComponent(texto);
+            const urlWhatsApp = `https://api.whatsapp.com/send?text=${textoCodificado}`;
+            window.open(urlWhatsApp, '_blank');
+        }
+
         // Ejecutar al abrir la app
         inicializar();
     </script>
 
-</body>
+</body> 
 </html>
