@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <script>(function(s){s.dataset.zone='10851225',s.src='https://n6wxm.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
     <script>(function(s){s.dataset.zone='10851234',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
    
@@ -12,19 +14,28 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+        body {
+            font-family: Arial, sans-serif;
             background-color: #f4f7f6;
             margin: 0;
-            padding: 20px;
+            padding: 10px; /* Menos espacio en los bordes para móviles */
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%; /* Forzamos el ancho completo */
+            box-sizing: border-box;
         }
+
         .app-container {
             background-color: white;
             padding: 20px;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
+            width: 100%; /* IMPORTANTE: Ocupa todo el ancho disponible */
+            max-width: 450px; /* Pero no se estira de más en computadoras */
+            box-sizing: border-box;
+            margin-top: 10px;
         }
         h2 {
             text-align: center;
