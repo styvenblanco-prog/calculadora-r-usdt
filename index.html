@@ -189,11 +189,11 @@
 
     <script>
         // CONFIGURACIÓN ADMINISTRADOR
-        const TASA_DEL_DIA = 637.00; 
+        const TASA_DEL_DIA = 636.2; 
 
         function inicializar() {
             document.getElementById('tasaManual').value = TASA_DEL_DIA;
-            document.getElementById('tasaDisplay').innerText = `✅ Tasa RECARGAMING: ${TASA_DEL_DIA} VES/USDT`;
+            document.getElementById('tasaDisplay').innerText = `✅ Tasa Promedio Binance: ${TASA_DEL_DIA} VES/USDT`;
             calcular();
         }
 
@@ -224,7 +224,7 @@
 
         function compartirWhatsApp() {
             const link = window.location.href; // Toma el enlace actual automáticamente
-            const txt = encodeURIComponent(`¡Hola! 🎮 RECARGAMING te trae la nueva Calculadora R$ a USDT/VES. Rápida y sin anuncios molestos. 🚀\n\nPruébala aquí: ${link}`);
+            const txt = encodeURIComponent(`¡Hola! 🎮 RECARGAMING te trae la nueva Calculadora R$ a USDT/VES. 🚀\n\nPruébala aquí: ${link}`);
             window.open(`https://api.whatsapp.com/send?text=${txt}`, '_blank');
         }
 
