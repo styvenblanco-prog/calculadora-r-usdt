@@ -208,12 +208,48 @@
 
     <script>
         // CONFIGURACIÓN ADMINISTRADOR
-        const TASA_DEL_DIA = 738.66; 
+        let TASA_DEL_DIA = 738.66; // Valor por defecto si falla la API
+
+        async function obtenerTasaYadio() {
+            const display = document.getElementById('tasaDisplay');
+            display.innerText = "🔄 Cargando tasa de Yadio...";
+            
+            try {
+                // Yadio API para USDT a VES
+                const response = await fetch('https://api.yadio.io/exrates/USD');
+                
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de Yadio');
+                }
+                
+                const data = await response.json();
+                
+                // Yadio devuelve las tasas por país, buscamos Venezuela (VES)
+                if (data && data.VES && data.VES.USDT) {
+                    TASA_DEL_DIA = parseFloat(data.VES.USDT);
+                    display.innerText = `✅ Tasa Promedio Yadio: ${TASA_DEL_DIA.toFixed(2)} VES/USDT`;
+                } else if (data && data.VES && data.VES.rate) {
+                    // Fallback: usar tasa USD si no hay USDT directo
+                    TASA_DEL_DIA = parseFloat(data.VES.rate);
+                    display.innerText = `✅ Tasa Promedio Yadio: ${TASA_DEL_DIA.toFixed(2)} VES/USD`;
+                } else {
+                    throw new Error('Formato de datos no esperado');
+                }
+                
+                // Actualizar el input manual con la tasa obtenida
+                document.getElementById('tasaManual').value = TASA_DEL_DIA.toFixed(2);
+                calcular();
+                
+            } catch (error) {
+                console.error('Error al obtener tasa de Yadio:', error);
+                display.innerText = `⚠️ Usando tasa predeterminada: ${TASA_DEL_DIA} VES/USDT`;
+                document.getElementById('tasaManual').value = TASA_DEL_DIA;
+                calcular();
+            }
+        }
 
         function inicializar() {
-            document.getElementById('tasaManual').value = TASA_DEL_DIA;
-            document.getElementById('tasaDisplay').innerText = `✅ Tasa Promedio Binance: ${TASA_DEL_DIA} VES/USDT`;
-            calcular();
+            obtenerTasaYadio();
         }
 
         function calcular() {
